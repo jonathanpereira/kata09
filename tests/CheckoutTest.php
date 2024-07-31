@@ -8,7 +8,6 @@ use PHPUnit\Framework\TestCase;
 
 class CheckoutTest extends TestCase
 {
-
     private function getPricingRules(): array
     {
         return [
@@ -30,6 +29,7 @@ class CheckoutTest extends TestCase
             ),
         ];
     }
+
     private function price(string $goods): float
     {
         $checkout = new Checkout($this->getPricingRules());
