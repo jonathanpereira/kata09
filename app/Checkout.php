@@ -13,7 +13,7 @@ class Checkout
     {
     }
 
-    public function scan($item): void
+    public function scan(string $item): void
     {
         $this->items[$item] = ($this->items[$item] ?? 0) + 1;
     }
