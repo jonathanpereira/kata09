@@ -4,6 +4,8 @@ use App\DefaultPriceStrategy;
 use App\DiscountPriceStrategy;
 use App\Checkout;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 class CheckoutTest extends TestCase
@@ -41,26 +43,34 @@ class CheckoutTest extends TestCase
         return $checkout->total();
     }
 
-    public function testTotals(): void
+    #[Test]
+    #[DataProvider('totalsDataProvider')]
+    public function itShouldCalculateTotals(int $expected, string $goods): void
     {
-        $this->assertEquals(0, $this->price(''));
-        $this->assertEquals(50, $this->price('A'));
-        $this->assertEquals(80, $this->price('AB'));
-        $this->assertEquals(115, $this->price('CDBA'));
-
-        $this->assertEquals(100, $this->price('AA'));
-        $this->assertEquals(130, $this->price('AAA'));
-        $this->assertEquals(180, $this->price('AAAA'));
-        $this->assertEquals(230, $this->price('AAAAA'));
-        $this->assertEquals(260, $this->price('AAAAAA'));
-
-        $this->assertEquals(160, $this->price('AAAB'));
-        $this->assertEquals(175, $this->price('AAABB'));
-        $this->assertEquals(190, $this->price('AAABBD'));
-        $this->assertEquals(190, $this->price('DABABA'));
+        $this->assertEquals($expected, $this->price($goods));
     }
 
-    public function testIncremental(): void
+    public static function totalsDataProvider(): array
+    {
+        return [
+            [0, ''],
+            [50, 'A'],
+            [80, 'AB'],
+            [115, 'CDBA'],
+            [100, 'AA'],
+            [130, 'AAA'],
+            [180, 'AAAA'],
+            [230, 'AAAAA'],
+            [260, 'AAAAAA'],
+            [160, 'AAAB'],
+            [175, 'AAABB'],
+            [190, 'AAABBD'],
+            [190, 'DABABA'],
+        ];
+    }
+
+    #[Test]
+    public function itShouldTestIncremental(): void
     {
         $checkout = new Checkout($this->getPricingRules());
 
@@ -82,7 +92,8 @@ class CheckoutTest extends TestCase
         $this->assertEquals(175, $checkout->total());
     }
 
-    public function testException(): void
+    #[Test]
+    public function itShouldTestException(): void
     {
         $this->expectException(InvalidArgumentException::class);
 
